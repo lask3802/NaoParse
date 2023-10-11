@@ -14,19 +14,19 @@ namespace NaoParse.AlissaWindow
 	internal class Alissa : Form
 	{
 		private IntPtr alissaHWnd;
-		public Alissa()
+		public Alissa(string packetProviderWndName)
 		{
-			Connect();
+			Connect(packetProviderWndName);
 		}
 
 		/// <summary>
 		/// Connects to the Alissa window.
 		/// </summary>
-		private void Connect()
+		private void Connect(string packetProviderWndName)
 		{
 			if (alissaHWnd == IntPtr.Zero)
 			{
-				if (!SelectPacketProvider(true))
+				if (!SelectPacketProvider(true, packetProviderWndName))
 					Application.Exit();
 			}
 
@@ -47,9 +47,9 @@ namespace NaoParse.AlissaWindow
 		/// </summary>
 		/// <param name="selectSingle">If true a single valid candidate will be selected without prompt.</param>
 		/// <returns></returns>
-		private bool SelectPacketProvider(bool selectSingle)
+		private bool SelectPacketProvider(bool selectSingle, string packetProviderWndName)
 		{
-			var alissaWindows = WinApi.FindAllWindows("mod_Alissa");
+			var alissaWindows = WinApi.FindAllWindows(packetProviderWndName);
 			FoundWindow window = null;
 
 			if (alissaWindows.Count == 0)

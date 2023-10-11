@@ -27,12 +27,14 @@ namespace NaoParse
 		private long petId;
 		private long pingStart;
 
+		private string packetProviderWndName;
 		// pale, source : https://github.com/exectails/MabiPale2
 		public static Queue<Msg> packetQueue = new Queue<Msg>();
 		private Alissa invisWindow;
 
-		public FrmDpsMeter()
+		public FrmDpsMeter(string packetProviderWndName_)
 		{
+			packetProviderWndName = packetProviderWndName_;
 			InitializeComponent();
 		}
 
@@ -106,7 +108,7 @@ namespace NaoParse
 			// Creating an invisible message receiver window in a separate thread
 			Thread invisWindowThread = new Thread(new ThreadStart(() =>
 			{
-				invisWindow = new Alissa();
+				invisWindow = new Alissa(packetProviderWndName);
 				invisWindow.Show();
 				invisWindow.Visible = false;
 				System.Windows.Threading.Dispatcher.Run();
