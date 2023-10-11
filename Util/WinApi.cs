@@ -220,6 +220,9 @@ namespace NaoParse.Util
 		[DllImport("user32.dll")]
 		public static extern UIntPtr SetTimer(IntPtr hWnd, UIntPtr nIDEvent, uint uElapse, IntPtr lpTimerFunc);
 
+		[DllImport("user32.dll", SetLastError=true)]
+		static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint processId);
+		
 		/// <summary>
 		/// Contains data to be passed to another application by the WM_COPYDATA message.
 		/// </summary>
@@ -288,6 +291,32 @@ namespace NaoParse.Util
 
 					result.Add(window);
 				}
+				
+			}
+			while (hWnd != IntPtr.Zero);
+			
+			hWnd = IntPtr.Zero;
+			do
+			{
+				if ((hWnd = FindWindowEx(IntPtr.Zero, hWnd, windowName, null)) != IntPtr.Zero)
+				{
+					var window = new FoundWindow
+					{
+						HWnd = hWnd,
+					};
+
+					var sb = new StringBuilder(255);
+					GetClassName(hWnd, sb, sb.Capacity);
+					window.ClassName = sb.ToString();
+					sb.Clear();
+					GetWindowText(hWnd, sb, sb.Capacity);
+					window.WindowName = sb.ToString();
+					
+					GetWindowThreadProcessId(hWnd, out var pid);
+					window.Pid = pid;
+					result.Add(window);
+				}
+				
 			}
 			while (hWnd != IntPtr.Zero);
 
@@ -303,10 +332,12 @@ namespace NaoParse.Util
 		public IntPtr HWnd { get; set; }
 		public string ClassName { get; set; }
 		public string WindowName { get; set; }
+		
+		public uint Pid { get; set; }
 
 		public override string ToString()
 		{
-			return ClassName;
+			return $"{WindowName}-{ClassName} ({Pid})";
 		}
 	}
 }

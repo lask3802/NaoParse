@@ -26,7 +26,7 @@ namespace NaoParse.AlissaWindow
 		{
 			if (alissaHWnd == IntPtr.Zero)
 			{
-				if (!SelectPacketProvider(true, packetProviderWndName))
+				if (!SelectPacketProvider(false, packetProviderWndName))
 					Application.Exit();
 			}
 
